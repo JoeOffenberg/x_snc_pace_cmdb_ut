@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sn_pace_io_definition">
+    <sn_pace_io_definition action="INSERT_OR_UPDATE">
+        <choice_script>/**The script should return an array with below object structure     [{"id":"","label":"","children":[{"id":"","label":""}]}] //children not mandatory     **/     (function() {         return [];     })();</choice_script>
+        <default_value/>
+        <description/>
+        <document_filter>cdm_deployable_id</document_filter>
+        <filter>ORDERBYDESClast_published</filter>
+        <immutable>true</immutable>
+        <inherited_from display_value="Snapshot">d5080473ebd7201024f10931d8522833</inherited_from>
+        <internal_name>x_snc_pace_cmdb_ut.a64c78779709a510ae9935b71153afc9.snapshotId.invocation.input</internal_name>
+        <io_context>a64c78779709a510ae9935b71153afc9</io_context>
+        <label>Snapshot</label>
+        <mandatory>true</mandatory>
+        <multi_select>false</multi_select>
+        <name>snapshotId</name>
+        <reference_script>/**The script should return an object with the following structure&#13;
+     {"id":"","label":""} **/&#13;
+     (function(current, counter) {&#13;
+         var label = current.getDisplayValue();&#13;
+         if (counter === 0 &amp;&amp; current.getValue('last_published')) {&#13;
+             label += ' (Most recent)'; &#13;
+         }&#13;
+         return {&#13;
+             "id": current.getUniqueValue(),&#13;
+             "label": label&#13;
+         };&#13;
+     });</reference_script>
+        <reference_table>sn_cdm_snapshot</reference_table>
+        <sys_class_name>sn_pace_io_definition</sys_class_name>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-23 01:08:48</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>ae4c78779709a510ae9935b71153afcc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Snapshot</sys_name>
+        <sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut">2fd523af9741a510ae9935b71153af32</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</sys_scope>
+        <sys_update_name>sn_pace_io_definition_ae4c78779709a510ae9935b71153afcc</sys_update_name>
+        <sys_updated_by>joe</sys_updated_by>
+        <sys_updated_on>2023-02-23 01:08:48</sys_updated_on>
+        <table>sn_pace_policy_version</table>
+        <type display_value="Reference">52a227c1bf3320001875647fcf07396a</type>
+        <used_as>input</used_as>
+        <used_for>invocation</used_for>
+    </sn_pace_io_definition>
+</record_update>

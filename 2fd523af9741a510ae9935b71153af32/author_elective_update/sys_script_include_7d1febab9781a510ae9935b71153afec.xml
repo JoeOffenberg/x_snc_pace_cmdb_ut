@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_snc_pace_cmdb_ut.check_location</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>check_location</name>
+        <script><![CDATA[var check_location = Class.create();
+check_location.prototype = {
+    initialize: function() {
+    },
+	
+	in_eu: function(location_name) {
+        if (!location_name)
+		{return false;
+		}
+		else {
+		result=false;
+		var gr = new GlideRecord('cmn_location');
+			gr.addQuery('name',location_name);
+			gr.query();
+		while(gr.next()){
+			if (gr.name.equals('Emea'))
+			{
+			result=true;
+			gs.info('->'+gr.name);
+			}
+			else if(gr.parent){
+				gs.info(gr.name+'-->'+gr.parent.name);
+				result=this.in_eu(gr.parent.name);
+				}
+				else {
+					return result;
+				}
+			
+		}
+		return result;
+		}
+			
+	},
+
+    type: 'check_location'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-22 19:45:16</sys_created_on>
+        <sys_id>7d1febab9781a510ae9935b71153afec</sys_id>
+        <sys_mod_count>41</sys_mod_count>
+        <sys_name>check_location</sys_name>
+        <sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut">2fd523af9741a510ae9935b71153af32</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</sys_scope>
+        <sys_update_name>sys_script_include_7d1febab9781a510ae9935b71153afec</sys_update_name>
+        <sys_updated_by>joe</sys_updated_by>
+        <sys_updated_on>2023-02-23 00:39:03</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</application>
+        <file_path/>
+        <instance_id>194cf25adb70c5101b813feb689619f6</instance_id>
+        <instance_name>vsmdemo1</instance_name>
+        <name>sys_script_include_7d1febab9781a510ae9935b71153afec</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;public&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;x_snc_pace_cmdb_ut.check_location&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;check_location&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var check_location = Class.create();
+check_location.prototype = {
+    initialize: function() {
+    },
+	
+	in_eu: function(location_name) {
+        if (!location_name)
+		{return false;
+		}
+		else {
+		result=false;
+		var gr = new GlideRecord('cmn_location');
+			gr.addQuery('name',location_name);
+			gr.query();
+		while(gr.next()){
+			if (gr.name.equals('Emea'))
+			{
+			result=true;
+			gs.info('-&gt;'+gr.name);
+			}
+			else if(gr.parent){
+				gs.info(gr.name+'--&gt;'+gr.parent.name);
+				result=this.in_eu(gr.parent.name);
+				}
+				else {
+					return result;
+				}
+			
+		}
+		return result;
+		}
+			
+	},
+
+    type: 'check_location'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;joe&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2023-02-22 19:45:16&lt;/sys_created_on&gt;&lt;sys_id&gt;7d1febab9781a510ae9935b71153afec&lt;/sys_id&gt;&lt;sys_mod_count&gt;41&lt;/sys_mod_count&gt;&lt;sys_name&gt;check_location&lt;/sys_name&gt;&lt;sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut"&gt;2fd523af9741a510ae9935b71153af32&lt;/sys_package&gt;&lt;sys_policy&gt;read&lt;/sys_policy&gt;&lt;sys_scope display_value="PAcE CMDB Utils"&gt;2fd523af9741a510ae9935b71153af32&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_7d1febab9781a510ae9935b71153afec&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;joe&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2023-02-23 00:39:03&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>580806254</payload_hash>
+        <record_name>check_location</record_name>
+        <reverted_from/>
+        <source>23d523af9741a510ae9935b71153af35</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-23 00:39:03</sys_created_on>
+        <sys_id>4f75fc3f97c5a510ae9935b71153af4d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1867bb5973f0000001</sys_recorded_at>
+        <sys_updated_by>joe</sys_updated_by>
+        <sys_updated_on>2023-02-23 00:39:03</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>0775fc3f37c5a510c22428abf28e7a4d</update_guid>
+        <update_guid_history>0775fc3f37c5a510c22428abf28e7a4d:580806254,1345b43f9dc5a510adaf0d4c61ebfa87:-1549720895,6b947cfb11c5a510868d39b2c2c3c8ad:1561834433,76543cfbe7c5a5109326f71c56fe4299:-542146790,ad2470fbb8c5a5109042d840e90bf0de:1427695489,5cf0fcf798c5a5101acde4977665cb0c:1269584815,46b0b0f7f0c5a510b69a3333676c2d7a:833351978,a5ef6cb79dc5a510b6ce36288c61942d:-494003559,60ab64b32ec5a51007dbc2338d8ae739:-942814683,3d7b64b3c0c5a510172dbc30b4b00933:390485737,e44ba87308c5a510f0c3d149d70f9b68:952624121,401ba473a3c5a5104a05b2f05bb15c3b:-197192225,57daa87311c5a51044ff9dd97020fd2d:868536359,b41a2cff4885a5105fa23e40dc937400:-2131099769,1f5720bfaf85a5106d2bdf35bc36e3c1:-1581903549,45272c7f6a85a510be836f95568adcab:639498375,63a66c3f6085a510ec889a1f02a76724:1422654964,07c290f78045a510614ffd390263e332:-586569795,1ca254b7bb45a5100b00fd6b57454b58:-907370328,098290b72945a510392875cf43e94c38:-1429825753,8db150b71f45a510f48c79adbaee363c:-1044480463,e1ce88b33345a510585801cdafaced82:1311216332,489e08b39645a51087ba7d8e876ae16a:-1902785917,a36e08b37145a51059cb0fef32051a57:2004522539,a61ec0b36b45a51032e8b50268eb5f27:1036679691,29a5483bc205a510534817112b813731:-1085258408,a175483b8705a510f504600570631e08:742511605,9525043ba805a510b621751550eeea37:-367583818,8994c0f7ff05a51069b2a0e30550567a:2108040858,e1248cb78d05a5105159d7ba594dce41:-425712062,b4d30cb79105a510a3612d1a429d975b:760330721,85b3c8b72e05a51064ebedd81f9e817f:398995716,49a340770605a5101be9a806803cc855:1592197548,6883cc374905a5104293449ef12ec67e:-1644850931,79124cf3ef05a51099ea21a1480bb537:-351982459,9502c4734405a51041083dc2a1285931:-2096803788,8ebf3b23c705a51058575cc1a00ec4e5:-267487418,bfde37ef06c1a510b11057c295613721:-848950826,67adb36fe0c1a51094badeffcca9c46d:-551545351,1505b763f9c1a510e064f8f2f60a2559:509844679,75d4b363adc1a510b3d2da9bb66067d4:839577571,a732b7afdc81a51019837a00dc559501:1772726895</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-23 20:42:24</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>106053fc2d1349e5a8b78612c87f1bf1</sys_id>
+        <sys_metadata>7d1febab9781a510ae9935b71153afec</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>check_location</sys_name>
+        <sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut">2fd523af9741a510ae9935b71153af32</sys_package>
+        <sys_parent/>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</sys_scope>
+        <sys_scope_delete display_value="">0c0f2f2ff3d9481d86b228d901b0e6f1</sys_scope_delete>
+        <sys_update_name>sys_script_include_7d1febab9781a510ae9935b71153afec</sys_update_name>
+        <sys_update_version display_value="sys_script_include_7d1febab9781a510ae9935b71153afec">4f75fc3f97c5a510ae9935b71153af4d</sys_update_version>
+        <sys_updated_by>joe</sys_updated_by>
+        <sys_updated_on>2023-02-23 20:42:24</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

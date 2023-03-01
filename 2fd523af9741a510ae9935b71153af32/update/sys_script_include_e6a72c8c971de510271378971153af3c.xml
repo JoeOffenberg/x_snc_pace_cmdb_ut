@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_snc_pace_cmdb_ut.cmdb_lookup</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Get the CI info relavant to a CDM Snapshot</description>
+        <name>cmdb_lookup</name>
+        <script><![CDATA[var cmdb_lookup = Class.create();
+cmdb_lookup.prototype = {
+    initialize: function() {},
+    get_ci_location_from_snapshot: function(snapshot_id) {
+
+        var gr = new GlideRecord('sn_cdm_snapshot');
+        gr.addQuery('sys_id', snapshot_id);
+        gr.query();
+        while (gr.next()) {
+            if (gr.cdm_deployable_id.cmdb_ci.location)
+                return gr.cdm_deployable_id.cmdb_ci.location.name;
+            else
+                return "";
+        }
+    },
+    in_eu: function(location_name) {
+        // return true or false whether location is in the EU
+        if (!location_name) {
+            return false;
+        } else {
+            result = false;
+            var gr = new GlideRecord('cmn_location');
+            gr.addQuery('name', location_name);
+            gr.query();
+            while (gr.next()) {
+                if (gr.name.equals('European Union')) {
+                    result = true;
+                    gs.info('->' + gr.name);
+                } else if (gr.parent) {
+                    gs.info(gr.name + '-->' + gr.parent.name);
+                    result = this.in_eu(gr.parent.name);
+                } else {
+                    return result;
+                }
+
+            }
+            return result;
+        }
+
+    },
+    all_affected: function(cmdb_ci) {
+        //return an array of names of  all affected CIs     
+        var affectedCis = "";
+        var depth = 3;
+        var ciu = new global.CIUtils();
+        var cilist = ciu.servicesAffectedByCI(cmdb_ci);
+        if ((cilist.length > 0)) {
+            for (i = 0; i < cilist.length; i++) {
+                affectedCis = (affectedCis + "," + this.get_name(cilist[i]));
+                depth = depth - 1;
+            }
+        }
+        return affectedCis.replace(/^,/, '');
+    },
+    get_name: function(cmdb_ci) {
+        //return name from sys_id     
+		var gr = new GlideRecord('cmdb_ci');
+		gr.addQuery('sys_id',cmdb_ci);
+		gr.query();
+		while (gr.next()){
+        return gr.name;
+		}	
+    },
+    type: 'cmdb_lookup'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-23 18:21:25</sys_created_on>
+        <sys_id>e6a72c8c971de510271378971153af3c</sys_id>
+        <sys_mod_count>37</sys_mod_count>
+        <sys_name>cmdb_lookup</sys_name>
+        <sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut">2fd523af9741a510ae9935b71153af32</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</sys_scope>
+        <sys_update_name>sys_script_include_e6a72c8c971de510271378971153af3c</sys_update_name>
+        <sys_updated_by>joe</sys_updated_by>
+        <sys_updated_on>2023-02-28 20:42:56</sys_updated_on>
+    </sys_script_include>
+</record_update>
