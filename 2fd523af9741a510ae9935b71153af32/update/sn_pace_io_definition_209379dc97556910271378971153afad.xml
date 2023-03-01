@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sn_pace_io_definition">
+    <sn_pace_io_definition action="INSERT_OR_UPDATE">
+        <choice_script>/**The script should return an array with below object structure
+     [{"id":"","label":"","children":[{"id":"","label":""}]}] //children not mandatory
+     **/
+     (function() {
+         return  new sn_cdm.CdmDeployableManager().getDeployablesGroupedByApplication();
+      
+     })();</choice_script>
+        <default_value/>
+        <description/>
+        <document_filter/>
+        <filter/>
+        <immutable>true</immutable>
+        <inherited_from display_value="Additional Deployable Input">ce518c3feb97201024f10931d8522858</inherited_from>
+        <internal_name>x_snc_pace_cmdb_ut.249379dc97556910271378971153afa6.additionalDeployablesInput.mapping.input</internal_name>
+        <io_context>249379dc97556910271378971153afa6</io_context>
+        <label>Additional Deployable Input</label>
+        <mandatory>false</mandatory>
+        <multi_select>true</multi_select>
+        <name>additionalDeployablesInput</name>
+        <reference_script>/**The script should return an object with the following structure&#13;     {"id":"","label":""} **/&#13;     (function(current) {&#13;         return {&#13;             "id": current.getUniqueValue(),&#13;             "label": current.getDisplayValue()&#13;         };&#13;     });</reference_script>
+        <reference_table/>
+        <sys_class_name>sn_pace_io_definition</sys_class_name>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-24 18:27:17</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>209379dc97556910271378971153afad</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Additional Deployable Input</sys_name>
+        <sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut">2fd523af9741a510ae9935b71153af32</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</sys_scope>
+        <sys_update_name>sn_pace_io_definition_209379dc97556910271378971153afad</sys_update_name>
+        <sys_updated_by>joe</sys_updated_by>
+        <sys_updated_on>2023-02-24 18:27:17</sys_updated_on>
+        <table>sn_pace_policy_version</table>
+        <type display_value="Choice">5217a7c1bf3320001875647fcf0739b7</type>
+        <used_as>input</used_as>
+        <used_for>mapping</used_for>
+    </sn_pace_io_definition>
+</record_update>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sn_pace_policy_version">
+    <sn_pace_policy_version action="INSERT_OR_UPDATE">
+        <created_from display_value="V4.0">c94e198097512910271378971153af00</created_from>
+        <data_collector/>
+        <description/>
+        <internal_name>x_snc_pace_cmdb_ut.74a48ae39736d110271378971153af20.5.0</internal_name>
+        <last_updated>2023-02-24 18:30:41</last_updated>
+        <last_updated_by>joe</last_updated_by>
+        <log_level/>
+        <most_recent_execution>fc7f6de9871161104c3d52c73cbb35db</most_recent_execution>
+        <name>V5.0</name>
+        <policy display_value="regionValidate">74a48ae39736d110271378971153af20</policy>
+        <revision>4.1</revision>
+        <script><![CDATA[/**
+  Check if a key value is valid based on an operator and reference value
+  input is a list of keys to search for with an operator and reference value for each one
+  ex: [{"key":"fqdn", "operator":"=", "refValue":"myDomain.com"}] will check if any "fqdn" key has value "myDomain.com"
+  Operators allowed are: <, <=, >, >=, = or ==, <> or !=, RANGE, CONTAINS, NOT CONTAINS, IN, NOT IN, REGEX
+ */
+ (function(logger, currentRecord, documentRecord, callerInput, mappedInput, childrenOutputs, output) {
+   //internal variables
+   var nbrFound = 0;
+   var nbrFailed = 0;
+   var keysToValidate = "";
+   //retrieve the input values
+   var snapshotId = callerInput.snapshotId;
+   logger.info(snapshotId);
+   var maxErrorDisplay = mappedInput.maxErrorDisplay;
+   var caseSensitive = typeof mappedInput.caseSensitive !== 'undefined' ? mappedInput.caseSensitive : true;
+   var jsonKeys = mappedInput.keysToValidate.array;
+   // Build the list of keys to search for
+   for (var i=0; i<jsonKeys.length; i++) {
+     keysToValidate = jsonKeys[i].key + ',' + keysToValidate;
+   }
+   logger.info("** This is list of keys to find: "+keysToValidate);
+   //loop through snapshot to check policy
+   var cdmQ = new sn_cdm.CdmQuery().snapshotId(snapshotId).decryptPassword(true).query();
+   while (node = cdmQ.next()) {
+     // Check only CDI class = Key/Value pairs (not nodes)
+     if ((sn_cdm.CdmQueryUtil.isCDI(node) || sn_cdm.CdmQueryUtil.isVariable(node)) && isIncluded(node.getName(), keysToValidate, caseSensitive)) {
+         nbrFound++;
+         var keyName = node.getName();
+         logger.info("Key "+keyName+" was found. Start check if compliant");
+         var keyValue = sn_cdm.CdmQueryUtil.getEffectiveValue(node);
+         // get list of validation to apply for this key
+         for (var i=0; i<jsonKeys.length; i++) {
+           if (jsonKeys[i].key == keyName) {
+             var operator = jsonKeys[i].operator;
+             var refValue = jsonKeys[i].refValue;
+             // Check rule
+             if (!checkValue(keyValue, operator, refValue, caseSensitive)) {
+               logger.debug("!! failure: value "+keyValue+" for key "+keyName+" is not compliant to rule "+operator+" with reference "+refValue);
+               sn_cdm.CdmPolicyUtil.addFailure(output, node, "compliancy violation", "value "+keyValue+" for key "+keyName+" is not compliant to rule "+operator+" with reference "+refValue, snapshotId);
+               nbrFailed++;
+             } // End if policy check
+           } // End if correct keyName
+        } // End for each validation to apply for this key
+     } // End if keyName is in keysToValidate list
+   } // End while
+   logger.info("Nb of keys found "+nbrFound+" of which "+nbrFailed+" failures" );
+  
+  //Check if CI is in EU
+  var cmdb_lookup = new x_snc_pace_cmdb_ut.cmdb_lookup();
+  location = cmdb_lookup.get_ci_location_from_snapshot(snapshotId);
+  in_eu=cmdb_lookup.in_eu(location);
+  if (in_eu)
+  {
+   //check if at least 1 test has failed, if so, set decision to non_compliant
+     output.decision = output.failures.length ? "non_compliant" : "compliant";
+  }
+   else
+   { logger.info("Deployable not in EU" );
+     output.warnings = [];
+     output.failures = [];
+     output.decision = "compliant";}
+   return output;
+  }
+ )(logger, currentRecord, documentRecord, callerInput, mappedInput, childrenOutputs, output);
+// Check if value (val) fullfills the operation (op) requirement compared to a reference value (refval)
+function checkValue (val, op, refVal, caseSensitive) {
+  logger.debug("op="+op);
+  logger.debug("val="+val);
+  logger.debug("refVal="+refVal);
+  switch (op) {
+    case ">":
+      if (Number(val) <= Number(refVal)) { return false; }
+      break;
+    case ">=":
+      if (Number(val) < Number(refVal)) { return false; }
+      break;
+    case "<":
+      if (Number(val) >= Number(refVal)) { return false; }
+      break;
+    case "<=":
+      if (Number(val) > Number(refVal)) { return false; }
+      break;
+    case "RANGE":
+      var min = Number(refVal.substring(0,refVal.indexOf("-")));
+      var max = Number(refVal.substring(refVal.indexOf("-")+1));
+      if (Number(val) < min || Number(val) > max) { return false; }
+      break;
+    case "=":
+    case "==":
+      if (val != refVal) { return false; }
+      break;
+    case "<>":
+    case "!=":
+      if (caseSensitive) {
+        if (val == refVal) { return false; }
+      } else {
+        if (val.toUpperCase() == refVal.toUpperCase()) { return false; }
+      }
+      break;
+    case "CONTAINS":
+      if (caseSensitive) {
+        if (val.indexOf(refVal)<0 ) { return false; }
+      } else {
+        if (val.toUpperCase().indexOf(refVal.toUpperCase())<0 ) { return false; }
+      }
+      break;
+    case "NOT CONTAINS":
+      if (caseSensitive) {
+        if (val.indexOf(refVal)>=0 ) { return false; }
+      } else {
+        if (val.toUpperCase().indexOf(refVal.toUpperCase())>=0 ) { return false; }
+      }
+      break;
+    case "IN":
+      if (!(isIncluded(val, refVal, caseSensitive))) { return false; }
+      break;
+    case "NOT IN":
+      if (isIncluded(val, refVal, caseSensitive)) { return false; }
+      break;
+    case "REGEX":
+      var regex = RegExp(refVal);
+      if (!(regex.test(val))) { return false; }
+      break;
+    default:
+      logger.error("Unknown Operator: "+op);
+      return false;
+      break;
+  }
+  return true;
+}
+// Check if an item is present in an array, equivalent to 'array.includes(item)'
+function isIncluded(myItem, myArrayString, caseSensitive) {
+    var result = false;
+    var myArray = typeof myArrayString !== 'undefined' ? myArrayString.split(",") : [];
+    caseSensitive = typeof caseSensitive !== 'undefined' ? caseSensitive : true;
+    for (var i=0; i < myArray.length; i++) {
+        if (caseSensitive) {
+          if (myItem === myArray[i]) { result=true; break; }
+        } else {
+          if (myItem.toUpperCase() === myArray[i].toUpperCase()) { result=true; break; }
+        }
+    }
+    return result;
+}
+]]></script>
+        <standard_runs>11</standard_runs>
+        <state>current</state>
+        <sys_class_name>sn_pace_policy_version</sys_class_name>
+        <sys_created_by>joe</sys_created_by>
+        <sys_created_on>2023-02-24 18:27:16</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_id>249379dc97556910271378971153afa6</sys_id>
+        <sys_mod_count>26</sys_mod_count>
+        <sys_name>V5.0</sys_name>
+        <sys_package display_value="PAcE CMDB Utils" source="x_snc_pace_cmdb_ut">2fd523af9741a510ae9935b71153af32</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="PAcE CMDB Utils">2fd523af9741a510ae9935b71153af32</sys_scope>
+        <sys_update_name>sn_pace_policy_version_249379dc97556910271378971153afa6</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-02-28 15:21:40</sys_updated_on>
+        <test_runs>1</test_runs>
+        <timeout_dur/>
+        <total_versions_created>0</total_versions_created>
+        <version>5.0</version>
+    </sn_pace_policy_version>
+</record_update>
